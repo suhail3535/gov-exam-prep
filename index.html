@@ -215,18 +215,23 @@ function home(){
   const best=done.length?Math.max(...done.map(([k,v])=>v.result.tot)):null;
   let nextN=null;for(let i=1;i<=SETS;i++){if(avail[i]&&!(S.sets[i]&&S.sets[i].submitted)){nextN=i;break;}}
   const cards=Array.from({length:SETS},(_,i)=>{const n=i+1;const s=S.sets[n];let chip,extra="";
+    const lock=locked(n);
     if(!avail[n])chip=`<span class="chip na">जल्द आ रहा है</span>`;
+    else if(lock)chip=`<span class="chip na">🔒 बंद</span>`,extra=`<div class="sub">सेट ${pad(n-1)} जमा करने पर खुलेगा</div>`;
     else if(s&&s.submitted&&s.result){chip=`<span class="chip done">पूरा</span>`;
       extra=`<div class="sc">${s.result.tot}/${TOTAL} · ${Math.round(s.result.tot/TOTAL*100)}%</div><div class="track"><div class="fill" style="width:${s.result.tot/TOTAL*100}%"></div></div>`;}
     else if(s&&s.end){const left=Math.max(0,s.end-Date.now());chip=`<span class="chip prog">जारी · ${Math.ceil(left/60000)} मिनट बाकी</span>`;}
     else chip=`<span class="chip">शुरू नहीं</span>`;
-    return `<button class="card${n===nextN?" next":""}" data-open="${n}" ${avail[n]?"":"disabled"}><div class="top"><span class="nm">सेट ${pad(n)}</span>${chip}</div><div class="focus">${FOCUS[n]}</div>${extra}</button>`;}).join("");
+    return `<button class="card${n===nextN?" next":""}" data-open="${n}" ${avail[n]&&!lock?"":"disabled"}><div class="top"><span class="nm">सेट ${pad(n)}</span>${chip}</div><div class="focus">${FOCUS[n]}</div>${extra}</button>`;}).join("");
   $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div><h1>UP TGT सामाजिक विज्ञान · मॉक सीरीज़</h1><div class="sub">विषय कोड 09 · 15 सेट · प्रतिदिन 1 सेट · 130 प्रश्न / 120 मिनट</div></div>${THEME_BTN}</div></div></header>
   <div class="wrap"><section class="hero"><h2>${nextN?`आज का सेट: सेट ${pad(nextN)}`:"सभी उपलब्ध सेट पूरे"}</h2>
-  <p>हर सेट में प्राचीन 30, मध्यकालीन 30, आधुनिक 30 और नागरिक शास्त्र 40 प्रश्न हैं। प्रश्न पिछले वर्षों के UP TGT/PGT व UPPSC पैटर्न पर आधारित हैं। जमा करने के बाद सही उत्तर, व्याख्या और खण्डवार अंक दिखेंगे।</p>
+  <p>हर सेट में प्राचीन 30, मध्यकालीन 30, आधुनिक 30 और नागरिक शास्त्र 40 प्रश्न हैं। प्रश्न पिछले वर्षों के UP TGT/PGT व UPPSC पैटर्न पर आधारित हैं। जमा करने के बाद सही उत्तर, व्याख्या और खण्डवार अंक दिखेंगे। अगला सेट पिछला सेट जमा करने पर खुलता है।</p>
   <div class="stats"><div class="stat"><b>${done.length}/${SETS}</b><span>सेट पूरे</span></div><div class="stat"><b>${avg??"—"}</b><span>औसत अंक / ${TOTAL}</span></div><div class="stat"><b>${best??"—"}</b><span>सर्वश्रेष्ठ / ${TOTAL}</span></div></div></section>
   <section class="sets" aria-label="सभी सेट">${cards}</section></div>`;
 }
+
+// A set opens only after the previous set has been submitted (a set already started stays open).
+function locked(n){if(n<=1)return false;const me=S.sets[n];if(me&&(me.end||me.submitted))return false;const p=S.sets[n-1];return !(p&&p.submitted);}
 
 /* ---------- START SCREEN ---------- */
 function startScreen(n){
@@ -243,6 +248,7 @@ function startScreen(n){
 /* ---------- TEST ---------- */
 async function openSet(n){
   view={set:n,tab:"anc",filter:"all"};
+  if(locked(n)){$("app").innerHTML=`<div class="msg">🔒 सेट ${pad(n)} अभी बंद है। पहले सेट ${pad(n-1)} जमा करें।<br><br><button class="back" data-home>← सभी सेट</button></div>`;return;}
   $("app").innerHTML=`<div class="msg">सेट ${pad(n)} लोड हो रहा है…</div>`;
   try{Q=await load(n);}catch(e){$("app").innerHTML=`<div class="msg">सेट ${pad(n)} अभी उपलब्ध नहीं है। <button class="back" data-home>वापस</button></div>`;return;}
   const s=st(n);
