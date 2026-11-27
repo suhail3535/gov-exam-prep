@@ -29,6 +29,8 @@ const dups = [];
 for (let x = 0; x < all.length; x++) for (let y = x + 1; y < all.length; y++) {
   const A = all[x], B = all[y];
   if (A.a.trim() !== B.a.trim()) continue;
+  // generic answer keys (statement / order / match / A-R) are shared by unrelated questions
+  if (/केवल|दोनों|न तो|^[\d,\s\-–]+$|[A-D]\s*[-–]\s*\d|\(A\)|\(R\)|सत्य|असत्य|सही है/.test(A.a)) continue;
   const wa = new Set(norm(A.q)), wb = new Set(norm(B.q));
   const inter = [...wa].filter(w => wb.has(w)).length;
   const j = inter / Math.max(1, Math.min(wa.size, wb.size));

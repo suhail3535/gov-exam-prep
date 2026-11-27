@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="UP TGT सामाजिक विज्ञान (विषय कोड 09) — 15 मॉक सेट, 120 प्रश्न, 120 मिनट, उत्तर व व्याख्या सहित।">
+<meta name="description" content="UP TGT सामाजिक विज्ञान (विषय कोड 09) — 15 मॉक सेट, 130 प्रश्न, 120 मिनट, उत्तर व व्याख्या सहित।">
 <style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
 <title>UP TGT मॉक सीरीज़</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -166,7 +166,7 @@ main.test aside{position:sticky;top:140px;align-self:start}
 <div id="app"></div>
 
 <script>
-const SETS=15, DUR=120*60*1000;
+const SETS=15, DUR=120*60*1000, TOTAL=130;
 const SECTIONS=[{key:"anc",name:"प्राचीन भारत",n:30},{key:"med",name:"मध्यकालीन भारत",n:30},{key:"mod",name:"आधुनिक भारत",n:30},{key:"civ",name:"नागरिक शास्त्र",n:40}];
 const FOCUS=["","संपूर्ण पाठ्यक्रम · आधार सेट","कला-स्थापत्य, स्रोत · संविधान के अनुच्छेद","प्रशासन, राजस्व, अर्थव्यवस्था · राजनीतिक चिंतक","धर्म, समाज सुधार · मौलिक अधिकार व DPSP","युद्ध, संधियाँ, कालक्रम · संसद","उत्तर प्रदेश से जुड़े प्रश्न · राष्ट्रपति, प्रधानमंत्री","विदेशी यात्री, व्यक्तित्व · न्यायपालिका","अधिवेशन, समाचार पत्र, राजधानियाँ · चुनाव व दल","कालक्रम व सुमेलन अभ्यास · राज्य सरकार, पंचायत","कथन व अभिकथन-कारण · विचारधाराएँ व अवधारणाएँ","राष्ट्रीय नेता, संविधान निर्माण · संघवाद","कम पूछे गए टॉपिक · नौकरशाही, लोकपाल","शब्दावली, 'असत्य कथन' · लोकतंत्र की चुनौतियाँ","सर्वाधिक दोहराए गए PYQ तथ्य · कठिन","अंतिम परीक्षा सिमुलेशन"];
 const LET=["a","b","c","d"];
@@ -217,14 +217,14 @@ function home(){
   const cards=Array.from({length:SETS},(_,i)=>{const n=i+1;const s=S.sets[n];let chip,extra="";
     if(!avail[n])chip=`<span class="chip na">जल्द आ रहा है</span>`;
     else if(s&&s.submitted&&s.result){chip=`<span class="chip done">पूरा</span>`;
-      extra=`<div class="sc">${s.result.tot}/120 · ${Math.round(s.result.tot/1.2)}%</div><div class="track"><div class="fill" style="width:${s.result.tot/1.2}%"></div></div>`;}
+      extra=`<div class="sc">${s.result.tot}/${TOTAL} · ${Math.round(s.result.tot/TOTAL*100)}%</div><div class="track"><div class="fill" style="width:${s.result.tot/TOTAL*100}%"></div></div>`;}
     else if(s&&s.end){const left=Math.max(0,s.end-Date.now());chip=`<span class="chip prog">जारी · ${Math.ceil(left/60000)} मिनट बाकी</span>`;}
     else chip=`<span class="chip">शुरू नहीं</span>`;
     return `<button class="card${n===nextN?" next":""}" data-open="${n}" ${avail[n]?"":"disabled"}><div class="top"><span class="nm">सेट ${pad(n)}</span>${chip}</div><div class="focus">${FOCUS[n]}</div>${extra}</button>`;}).join("");
-  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div><h1>UP TGT सामाजिक विज्ञान · मॉक सीरीज़</h1><div class="sub">विषय कोड 09 · 15 सेट · प्रतिदिन 1 सेट · 120 प्रश्न / 120 मिनट</div></div>${THEME_BTN}</div></div></header>
+  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div><h1>UP TGT सामाजिक विज्ञान · मॉक सीरीज़</h1><div class="sub">विषय कोड 09 · 15 सेट · प्रतिदिन 1 सेट · 130 प्रश्न / 120 मिनट</div></div>${THEME_BTN}</div></div></header>
   <div class="wrap"><section class="hero"><h2>${nextN?`आज का सेट: सेट ${pad(nextN)}`:"सभी उपलब्ध सेट पूरे"}</h2>
   <p>हर सेट में प्राचीन 30, मध्यकालीन 30, आधुनिक 30 और नागरिक शास्त्र 40 प्रश्न हैं। प्रश्न पिछले वर्षों के UP TGT/PGT व UPPSC पैटर्न पर आधारित हैं। जमा करने के बाद सही उत्तर, व्याख्या और खण्डवार अंक दिखेंगे।</p>
-  <div class="stats"><div class="stat"><b>${done.length}/${SETS}</b><span>सेट पूरे</span></div><div class="stat"><b>${avg??"—"}</b><span>औसत अंक / 120</span></div><div class="stat"><b>${best??"—"}</b><span>सर्वश्रेष्ठ / 120</span></div></div></section>
+  <div class="stats"><div class="stat"><b>${done.length}/${SETS}</b><span>सेट पूरे</span></div><div class="stat"><b>${avg??"—"}</b><span>औसत अंक / ${TOTAL}</span></div><div class="stat"><b>${best??"—"}</b><span>सर्वश्रेष्ठ / ${TOTAL}</span></div></div></section>
   <section class="sets" aria-label="सभी सेट">${cards}</section></div>`;
 }
 
@@ -233,7 +233,7 @@ function startScreen(n){
   $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div class="hleft"><button class="back" data-home>← सभी सेट</button><h1>सेट ${pad(n)}</h1></div>${THEME_BTN}</div></div></header>
   <div class="wrap"><div class="start"><h2>सेट ${pad(n)}</h2><div class="sub">${FOCUS[n]}</div>
   <div class="secs">${SECTIONS.map(s=>`<div>${s.name}<b>${s.n}</b></div>`).join("")}</div>
-  <ul><li>कुल 120 प्रश्न, समय 120 मिनट। प्रत्येक प्रश्न 1 अंक, कोई ऋणात्मक अंकन नहीं।</li>
+  <ul><li>कुल 130 प्रश्न, समय 120 मिनट। प्रत्येक प्रश्न 1 अंक, कोई ऋणात्मक अंकन नहीं।</li>
   <li>"शुरू करें" दबाते ही टाइमर चालू होगा और ऐप बंद करने पर भी चलता रहेगा, जैसे असली परीक्षा में।</li>
   <li>उत्तर अपने-आप सहेजे जाते हैं। उसी विकल्प को फिर दबाने पर उत्तर हट जाएगा।</li>
   <li>समय खत्म होने पर टेस्ट अपने-आप जमा हो जाएगा।</li></ul>
@@ -266,7 +266,7 @@ function renderTabs(){const s=st(view.set);
 function resultHTML(){const s=st(view.set);const r=scoreOf(view.set,Q);
   const rows=SECTIONS.map(x=>{const t=Q.filter(q=>q.sec===x.key).length;return `<div class="bar"><span>${x.name}</span><div class="track"><div class="fill" style="width:${r.by[x.key]/t*100}%"></div></div><span>${r.by[x.key]}/${t}</span></div>`}).join("");
   const weak=SECTIONS.map(x=>({x,p:r.by[x.key]/x.n})).sort((a,b)=>a.p-b.p)[0];
-  return `<div class="result"><div class="sub">कुल अंक</div><div class="score">${r.tot} <small>/ 120 · ${Math.round(r.tot/1.2)}% · हल किए ${r.att} · गलत ${r.att-r.tot} · छोड़े ${120-r.att}</small></div><div class="bars">${rows}</div>
+  return `<div class="result"><div class="sub">कुल अंक</div><div class="score">${r.tot} <small>/ ${TOTAL} · ${Math.round(r.tot/TOTAL*100)}% · हल किए ${r.att} · गलत ${r.att-r.tot} · छोड़े ${TOTAL-r.att}</small></div><div class="bars">${rows}</div>
   <p class="sub" style="margin-top:14px">सबसे कमज़ोर खण्ड: <b>${weak.x.name}</b>। किसी भी खण्ड के टैब में सही उत्तर हरे और आपका गलत उत्तर लाल दिखेगा, साथ में व्याख्या भी।</p>
   <button class="btn ghost" id="restart">यह सेट दोबारा हल करें</button></div>`;}
 function renderList(){const s=st(view.set);const L=$("list");
@@ -290,12 +290,12 @@ function renderGrid(){const s=st(view.set);const qs=view.tab==="res"?Q:Q.filter(
   const att=Object.keys(s.answers).length;
   if($("mbar"))$("mbar").innerHTML=s.submitted
    ?`<button class="btn ghost" data-sheet>उत्तर पत्रक</button>${view.tab==="res"?"":`<button class="btn" data-t="res">परिणाम</button>`}`
-   :`<button class="btn" data-sheet>उत्तर पत्रक व जमा करें · ${att}/120</button>`;
+   :`<button class="btn" data-sheet>उत्तर पत्रक व जमा करें · ${att}/${TOTAL}</button>`;
   $("actions").innerHTML=s.submitted?(view.tab==="res"?"":`<button class="btn ghost" data-t="res">परिणाम देखें</button>`)
-   :`<button class="btn" id="submit">टेस्ट जमा करें (${att}/120)</button><div id="confirm"></div>`;}
+   :`<button class="btn" id="submit">टेस्ट जमा करें (${att}/${TOTAL})</button><div id="confirm"></div>`;}
 function submit(){const n=view.set,s=st(n);if(s.submitted)return;s.submitted=true;s.result=scoreOf(n,Q);s.at=Date.now();save();view.tab="res";renderTabs();renderList();renderGrid();tick();window.scrollTo(0,0);}
 function tick(){const t=$("timer");if(!t)return;const s=st(view.set);
-  if(s.submitted){t.textContent=`${s.result?s.result.tot:"—"}/120`;t.classList.remove("low");return;}
+  if(s.submitted){t.textContent=`${s.result?s.result.tot:"—"}/${TOTAL}`;t.classList.remove("low");return;}
   const left=Math.max(0,s.end-Date.now());t.textContent=pad(Math.floor(left/60000))+":"+pad(Math.floor(left%60000/1000));t.classList.toggle("low",left<10*60000);
   if(left<=0)submit();}
 
@@ -312,7 +312,7 @@ document.addEventListener("click",e=>{
   if(el.dataset.begin){const s=st(+el.dataset.begin);s.end=Date.now()+DUR;s.answers={};save();renderTest();window.scrollTo(0,0);return;}
   if(el.dataset.t){sheet(false);view.tab=el.dataset.t;view.filter="all";renderTabs();renderList();renderGrid();window.scrollTo(0,0);return;}
   if(el.dataset.f){view.filter=el.dataset.f;renderList();return;}
-  if(el.id==="submit"){const att=Object.keys(st(view.set).answers).length;$("confirm").innerHTML=`<div class="confirm">${120-att} प्रश्न बाकी हैं। जमा करने के बाद उत्तर बदले नहीं जा सकेंगे।<div class="row"><button class="btn" id="yes">हाँ, जमा करें</button><button class="btn ghost" id="no">वापस</button></div></div>`;return;}
+  if(el.id==="submit"){const att=Object.keys(st(view.set).answers).length;$("confirm").innerHTML=`<div class="confirm">${TOTAL-att} प्रश्न बाकी हैं। जमा करने के बाद उत्तर बदले नहीं जा सकेंगे।<div class="row"><button class="btn" id="yes">हाँ, जमा करें</button><button class="btn ghost" id="no">वापस</button></div></div>`;return;}
   if(el.id==="yes"){sheet(false);submit();return;}
   if(el.id==="no"){$("confirm").innerHTML="";return;}
   if(el.id==="restart"){if(el.dataset.armed){S.sets[view.set]={answers:{},end:null,submitted:false};save();startScreen(view.set);window.scrollTo(0,0);}
