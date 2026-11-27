@@ -28,6 +28,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;flex-wrap:wrap}
 .hleft{display:flex;align-items:center;gap:12px;min-width:0}
+.hrow>div:first-child{min-width:0}
 h1{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0;line-height:1.2;text-wrap:balance}
 .sub{color:var(--muted);font-size:.85rem;letter-spacing:.02em}
 .back{font:inherit;font-size:.9rem;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
@@ -115,6 +116,50 @@ main.test aside{position:sticky;top:140px;align-self:start}
 .filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .msg{padding:40px 0;text-align:center;color:var(--muted)}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.hright{display:flex;align-items:center;gap:8px}
+.theme{width:38px;height:38px;flex:none;display:grid;place-items:center;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;cursor:pointer;padding:0}
+.theme svg{width:18px;height:18px}
+.theme .moon{display:block}.theme .sun{display:none}
+:root[data-theme="dark"] .theme .moon{display:none}:root[data-theme="dark"] .theme .sun{display:block}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .theme .moon{display:none}:root:not([data-theme="light"]) .theme .sun{display:block}}
+.mbar,.sheet-head{display:none}
+
+/* phone */
+@media (max-width:820px){
+  body{font-size:16px}
+  h1{font-size:1.1rem}
+  .hrow{padding-block:8px;flex-wrap:nowrap}
+  .hleft{gap:8px}
+  .test-h .sub{display:none}
+  .back{padding:4px 8px;font-size:.85rem;white-space:nowrap}
+  .timer{font-size:.95rem;padding:3px 8px}
+  .tab{font-size:.85rem;padding:5px 11px}
+  .tabs{padding-bottom:8px;scrollbar-width:none}
+  .q{padding:14px;scroll-margin-top:118px}
+  .opt{padding:9px 10px;min-height:44px}
+  .hero{padding-block:20px 4px}
+  .stats{gap:22px}
+  .stat b{font-size:1.6rem}
+  .sets{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding-block:18px 60px}
+  .card{padding:12px}
+  .card .nm{font-size:1.1rem}
+  .start{margin:18px auto 60px;padding:18px}
+  .bar{grid-template-columns:6.5em minmax(0,1fr) 3.6em}
+  .score{font-size:2rem}
+  main.test{padding-block:16px 96px}
+  main.test aside{position:fixed;left:0;right:0;bottom:0;z-index:20;order:0;top:auto;max-height:78vh;overflow:auto;transform:translateY(105%);transition:transform .22s ease;
+    padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+  main.test aside.open{transform:none;box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+  main.test aside .panel{border-radius:14px 14px 0 0;border-bottom:none;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .sheet-head h3{margin:0}
+  .grid{grid-template-columns:repeat(8,1fr)}
+  .mbar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--paper);border-top:1px solid var(--line);
+    padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .mbar .btn{margin:0}
+  .shade{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:19}
+}
+@media (prefers-reduced-motion:reduce){main.test aside{transition:none}}
 </style>
 </head>
 <body>
@@ -132,6 +177,12 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 const cache={};let avail={};
 let view={set:null,tab:"anc",filter:"all"},Q=[],timerId=null;
 const $=id=>document.getElementById(id);
+const TKEY="uptgt-theme";
+try{const t=localStorage.getItem(TKEY);if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}
+function isDark(){const a=document.documentElement.getAttribute("data-theme");return a?a==="dark":matchMedia("(prefers-color-scheme: dark)").matches;}
+function toggleTheme(){const t=isDark()?"light":"dark";document.documentElement.setAttribute("data-theme",t);try{localStorage.setItem(TKEY,t);}catch(e){}}
+const THEME_BTN=`<button class="theme" data-theme-toggle aria-label="लाइट / डार्क मोड बदलें" title="लाइट / डार्क मोड"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg></button>`;
+function sheet(open){const a=document.querySelector("main.test aside");if(!a)return;a.classList.toggle("open",open);const sh=$("shade");if(sh)sh.hidden=!open;}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pad=n=>String(n).padStart(2,"0");
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -170,7 +221,7 @@ function home(){
     else if(s&&s.end){const left=Math.max(0,s.end-Date.now());chip=`<span class="chip prog">जारी · ${Math.ceil(left/60000)} मिनट बाकी</span>`;}
     else chip=`<span class="chip">शुरू नहीं</span>`;
     return `<button class="card${n===nextN?" next":""}" data-open="${n}" ${avail[n]?"":"disabled"}><div class="top"><span class="nm">सेट ${pad(n)}</span>${chip}</div><div class="focus">${FOCUS[n]}</div>${extra}</button>`;}).join("");
-  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div><h1>UP TGT सामाजिक विज्ञान · मॉक सीरीज़</h1><div class="sub">विषय कोड 09 · 15 सेट · प्रतिदिन 1 सेट · 120 प्रश्न / 120 मिनट</div></div></div></div></header>
+  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div><h1>UP TGT सामाजिक विज्ञान · मॉक सीरीज़</h1><div class="sub">विषय कोड 09 · 15 सेट · प्रतिदिन 1 सेट · 120 प्रश्न / 120 मिनट</div></div>${THEME_BTN}</div></div></header>
   <div class="wrap"><section class="hero"><h2>${nextN?`आज का सेट: सेट ${pad(nextN)}`:"सभी उपलब्ध सेट पूरे"}</h2>
   <p>हर सेट में प्राचीन 30, मध्यकालीन 30, आधुनिक 30 और नागरिक शास्त्र 40 प्रश्न हैं। प्रश्न पिछले वर्षों के UP TGT/PGT व UPPSC पैटर्न पर आधारित हैं। जमा करने के बाद सही उत्तर, व्याख्या और खण्डवार अंक दिखेंगे।</p>
   <div class="stats"><div class="stat"><b>${done.length}/${SETS}</b><span>सेट पूरे</span></div><div class="stat"><b>${avg??"—"}</b><span>औसत अंक / 120</span></div><div class="stat"><b>${best??"—"}</b><span>सर्वश्रेष्ठ / 120</span></div></div></section>
@@ -179,7 +230,7 @@ function home(){
 
 /* ---------- START SCREEN ---------- */
 function startScreen(n){
-  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div class="hleft"><button class="back" data-home>← सभी सेट</button><h1>सेट ${pad(n)}</h1></div></div></div></header>
+  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div class="hleft"><button class="back" data-home>← सभी सेट</button><h1>सेट ${pad(n)}</h1></div>${THEME_BTN}</div></div></header>
   <div class="wrap"><div class="start"><h2>सेट ${pad(n)}</h2><div class="sub">${FOCUS[n]}</div>
   <div class="secs">${SECTIONS.map(s=>`<div>${s.name}<b>${s.n}</b></div>`).join("")}</div>
   <ul><li>कुल 120 प्रश्न, समय 120 मिनट। प्रत्येक प्रश्न 1 अंक, कोई ऋणात्मक अंकन नहीं।</li>
@@ -201,8 +252,9 @@ async function openSet(n){
 }
 function renderTest(){
   const n=view.set,s=st(n);
-  $("app").innerHTML=`<header><div class="wrap"><div class="hrow"><div class="hleft"><button class="back" data-home>← सभी सेट</button><div><h1>सेट ${pad(n)}</h1><div class="sub">${FOCUS[n]}</div></div></div><div class="timer" id="timer">—</div></div><div class="tabs" role="tablist" id="tabs"></div></div></header>
-  <div class="wrap"><main class="test"><section id="list" aria-live="polite"></section><aside><div class="panel"><h3 id="navTitle"></h3><div class="grid" id="grid"></div><div class="legend" id="legend"></div><div id="actions"></div></div></aside></main></div>`;
+  $("app").innerHTML=`<header class="test-h"><div class="wrap"><div class="hrow"><div class="hleft"><button class="back" data-home>← सभी सेट</button><div><h1>सेट ${pad(n)}</h1><div class="sub">${FOCUS[n]}</div></div></div><div class="hright"><div class="timer" id="timer">—</div>${THEME_BTN}</div></div><div class="tabs" role="tablist" id="tabs"></div></div></header>
+  <div class="wrap"><main class="test"><section id="list" aria-live="polite"></section><aside><div class="panel"><div class="sheet-head"><h3>उत्तर पत्रक</h3><button class="back" data-close>बंद करें ✕</button></div><h3 id="navTitle"></h3><div class="grid" id="grid"></div><div class="legend" id="legend"></div><div id="actions"></div></div></aside></main></div>
+  <div class="shade" id="shade" data-close hidden></div><div class="mbar" id="mbar"></div>`;
   renderTabs();renderList();renderGrid();
   clearInterval(timerId);tick();timerId=setInterval(tick,1000);
 }
@@ -236,6 +288,9 @@ function renderGrid(){const s=st(view.set);const qs=view.tab==="res"?Q:Q.filter(
   $("legend").innerHTML=s.submitted?`<span><i style="background:var(--ok)"></i>सही</span><span><i style="background:var(--bad)"></i>गलत</span><span><i style="border:1px solid var(--line)"></i>छोड़ा</span>`
    :`<span><i style="background:var(--sel)"></i>उत्तर दिया</span><span><i style="border:1px solid var(--line)"></i>बाकी</span>`;
   const att=Object.keys(s.answers).length;
+  if($("mbar"))$("mbar").innerHTML=s.submitted
+   ?`<button class="btn ghost" data-sheet>उत्तर पत्रक</button>${view.tab==="res"?"":`<button class="btn" data-t="res">परिणाम</button>`}`
+   :`<button class="btn" data-sheet>उत्तर पत्रक व जमा करें · ${att}/120</button>`;
   $("actions").innerHTML=s.submitted?(view.tab==="res"?"":`<button class="btn ghost" data-t="res">परिणाम देखें</button>`)
    :`<button class="btn" id="submit">टेस्ट जमा करें (${att}/120)</button><div id="confirm"></div>`;}
 function submit(){const n=view.set,s=st(n);if(s.submitted)return;s.submitted=true;s.result=scoreOf(n,Q);s.at=Date.now();save();view.tab="res";renderTabs();renderList();renderGrid();tick();window.scrollTo(0,0);}
@@ -248,21 +303,24 @@ function tick(){const t=$("timer");if(!t)return;const s=st(view.set);
 function route(){const m=location.hash.match(/^#set-(\d+)$/);if(m&&+m[1]>=1&&+m[1]<=SETS)openSet(+m[1]);else{view.set=null;home();}}
 function go(h){if(location.hash===h)route();else location.hash=h;}
 document.addEventListener("click",e=>{
+  if(e.target.closest("[data-close]")){sheet(false);return;}
   const el=e.target.closest("button");if(!el)return;
+  if(el.hasAttribute("data-theme-toggle")){toggleTheme();return;}
+  if(el.hasAttribute("data-sheet")){sheet(true);return;}
   if(el.hasAttribute("data-home")){go("#home");return;}
   if(el.dataset.open){go("#set-"+el.dataset.open);return;}
   if(el.dataset.begin){const s=st(+el.dataset.begin);s.end=Date.now()+DUR;s.answers={};save();renderTest();window.scrollTo(0,0);return;}
-  if(el.dataset.t){view.tab=el.dataset.t;view.filter="all";renderTabs();renderList();renderGrid();window.scrollTo(0,0);return;}
+  if(el.dataset.t){sheet(false);view.tab=el.dataset.t;view.filter="all";renderTabs();renderList();renderGrid();window.scrollTo(0,0);return;}
   if(el.dataset.f){view.filter=el.dataset.f;renderList();return;}
   if(el.id==="submit"){const att=Object.keys(st(view.set).answers).length;$("confirm").innerHTML=`<div class="confirm">${120-att} प्रश्न बाकी हैं। जमा करने के बाद उत्तर बदले नहीं जा सकेंगे।<div class="row"><button class="btn" id="yes">हाँ, जमा करें</button><button class="btn ghost" id="no">वापस</button></div></div>`;return;}
-  if(el.id==="yes"){submit();return;}
+  if(el.id==="yes"){sheet(false);submit();return;}
   if(el.id==="no"){$("confirm").innerHTML="";return;}
   if(el.id==="restart"){if(el.dataset.armed){S.sets[view.set]={answers:{},end:null,submitted:false};save();startScreen(view.set);window.scrollTo(0,0);}
     else{el.dataset.armed="1";el.textContent="पक्का? इस सेट के पिछले उत्तर और अंक मिट जाएँगे। फिर से दबाएँ";}return;}
   if(el.classList.contains("opt")){const s=st(view.set);if(s.submitted)return;const q=+el.dataset.q,i=+el.dataset.i;
     if(s.answers[q]===i)delete s.answers[q];else s.answers[q]=i;save();
     el.closest(".q").querySelectorAll(".opt").forEach((b,k)=>b.classList.toggle("sel",s.answers[q]===k));renderTabs();renderGrid();return;}
-  if(el.dataset.go){const q=Q[+el.dataset.go-1];if(view.tab!==q.sec){view.tab=q.sec;view.filter="all";renderTabs();renderList();renderGrid();}
+  if(el.dataset.go){sheet(false);const q=Q[+el.dataset.go-1];if(view.tab!==q.sec){view.tab=q.sec;view.filter="all";renderTabs();renderList();renderGrid();}
     const a=$("q"+q.n);if(a)a.scrollIntoView({block:"start"});}
 });
 window.addEventListener("hashchange",route);
